@@ -104,3 +104,4 @@ tims-client
 node_modules
 
 .pytest_cache/
+htdocs/*

@@ -5,6 +5,8 @@ from responses import http_response
 from routing import route_request
 
 # https://docs.python.org/3/howto/logging.html#changing-the-format-of-displayed-messages
+from static import detect_mime_type
+
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s %(message)s')
@@ -48,6 +50,12 @@ while True:
 
     method, path, version = first_line.split()
     response = route_request(path)
-    prepared_response = http_response(response)
-    c.sendall(prepared_response)
+
+    content_type = detect_mime_type(path)
+
+    prepared_response = http_response(response, content_type)
+    try:
+        c.sendall(prepared_response)
+    except BrokenPipeError:
+        pass
     c.close()
