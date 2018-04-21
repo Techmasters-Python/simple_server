@@ -1,5 +1,7 @@
 import logging
 import socket
+import urllib.parse
+from threading import Thread
 
 from responses import http_response
 from routing import route_request
@@ -49,13 +51,19 @@ while True:
     logging.debug(first_line)
 
     method, path, version = first_line.split()
+
+    path = urllib.parse.unquote(path)
+
     response = route_request(path)
 
-    content_type = detect_mime_type(path)
 
-    prepared_response = http_response(response, content_type)
-    try:
-        c.sendall(prepared_response)
-    except BrokenPipeError:
-        pass
-    c.close()
+    def give_response():
+        content_type = detect_mime_type(path)
+        prepared_response = http_response(response, content_type)
+        try:
+            c.sendall(prepared_response)
+            c.close()
+        except BrokenPipeError:
+            pass
+
+    Thread(target=give_response).start()
