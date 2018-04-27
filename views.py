@@ -1,15 +1,18 @@
 import json
 import logging
 
-quotes = []
+from storages import FileBackend
+
+backend = FileBackend()
 
 
 def index(request):
     if request['method'] == "GET":
+        quotes = backend.list_quotes()
         return json.dumps(quotes)
     if request['method'] == 'POST':
         parsed = json.loads(request['payload'])
-        quotes.append(parsed)
+        backend.add_quote(parsed)
         return request['payload']
 
     return json.dumps({
