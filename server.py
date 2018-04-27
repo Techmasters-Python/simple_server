@@ -8,6 +8,7 @@ from routing import route_request
 
 # https://docs.python.org/3/howto/logging.html#changing-the-format-of-displayed-messages
 from static import detect_mime_type
+from utils import read_configuration
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -34,8 +35,10 @@ server_socket.setsockopt(
     socket.SO_REUSEADDR,
     1)
 
-hostname = 'localhost'
-port = 23456
+config = read_configuration()
+
+hostname = config['hostname']
+port = int(config['port'])
 
 server_socket.bind((hostname, port))
 server_socket.listen(1000)
