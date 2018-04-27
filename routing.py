@@ -1,11 +1,13 @@
 from static import serve_file
-from views import index, about_page, handle_404
+from views import index, handle_404
 
 
-def route_request(path):
-    if path == '/':
-        return index()
-    if path == '/about':
-        return about_page()
-    return serve_file(path)
+def render_view(func, request):
+    return func(request).encode()
+
+
+def route_request(request):
+    if request['path'] == '/':
+        return render_view(index, request)
+    return serve_file(request['path'])
     # return handle_404(path)

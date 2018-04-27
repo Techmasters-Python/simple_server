@@ -48,8 +48,10 @@ logging.debug("Starting server...")
 while True:
     c, address = server_socket.accept()
     request = c.recv(4096).decode('utf-8')
-    lines = request.split('\r\n')
-    first_line = lines[0]
+    headers, payload = request.split('\r\n\r\n')
+    headers = headers.split('\r\n')
+
+    first_line = headers[0]
 
     logging.debug(first_line)
 
@@ -57,16 +59,22 @@ while True:
 
     path = urllib.parse.unquote(path)
 
-    response = route_request(path)
+    response = route_request({
+        'path': path,
+        'method': method,
+        'headers': headers,
+        'payload': payload
+    })
 
 
     def give_response():
-        content_type = detect_mime_type(path)
-        prepared_response = http_response(response, content_type)
+        # content_type = detect_mime_type(path)
+        prepared_response = http_response(response)
         try:
             c.sendall(prepared_response)
             c.close()
         except BrokenPipeError:
             pass
 
-    Thread(target=give_response).start()
+    give_response()
+    # Thread(target=give_response).start()
