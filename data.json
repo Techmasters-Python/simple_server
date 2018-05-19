@@ -1,1 +1,14 @@
-[{"quote": "ALu is good for health", "author": "Michael Lee"}, {"quote": "POP3 is bad", "author": "Ahmed"}]
+[
+  {
+    "quote": "ALu is good for health",
+    "author": "Michael Lee"
+  },
+  {
+    "quote": "POP3 is bad",
+    "author": "Ahmed"
+  },
+  {
+    "quote": "Family is not an important thing. It's everything.",
+    "author": "Michael J. Fox"
+  }
+]
